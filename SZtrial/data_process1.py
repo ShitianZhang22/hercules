@@ -1,3 +1,9 @@
+"""
+This is for converting the original .csv staff data into all-digit .txt file for numpy.
+
+Note: some lines have missing data
+"""
+
 import numpy as np
 import pandas
 import os
@@ -14,10 +20,10 @@ def date_transfer(d_str=''):
 def time_transfer(t_str=''):
     t_str = t_str.split(' ')
     _temp = t_str[1].split(':')
-    _temp = int(_temp[0]) * 3600 + int(_temp[1]) * 60 + int(_temp[2])
-    if t_str[2] == 'PM':
-        _temp += 43200
-    return _temp
+    _temp1 = int(_temp[0]) * 3600 + int(_temp[1]) * 60 + int(_temp[2])
+    if t_str[2] == 'PM' and _temp[0] != '12':  # there are forms like 12:01 PM in the data
+        _temp1 += 43200
+    return _temp1
 
 
 if not os.path.exists('tech'):
@@ -35,6 +41,7 @@ for i in range(data.shape[0]):
     print(i)
     switch = False  # indicator for the next series
     temp = data.iloc[i]
+
     # staff
     temp1 = temp.iloc[0].split(' ')[1]
     if staff != temp1:
@@ -45,6 +52,9 @@ for i in range(data.shape[0]):
     if date != temp1:
         date = temp1
         switch = True
+    # # break at long duration
+    # if int(temp[-1]) > 10000:
+    #     switch = True
     if switch:
         series += 1
     data2[i, 0] = series
@@ -54,6 +64,6 @@ for i in range(data.shape[0]):
     data2[i, 5] = time_transfer(temp.iloc[2])
     data2[i, 6] = time_transfer(temp.iloc[3])
     data2[i, 7] = data2[i, 6] - data2[i, 5]
-    if data2[i, 7] <= 0:
-        data2[i, 7] += 86400
-np.savetxt(r'tech/' + file0 + '.txt', data2, fmt='%f', delimiter=',', encoding='utf-8')
+    if data2[i, 7] < 0:  # date change
+        data2[i, 7] = 0
+np.savetxt(r'tech/converted/' + file0 + '.csv', data2, fmt='%f', delimiter=',', encoding='utf-8')
