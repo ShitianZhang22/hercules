@@ -29,7 +29,7 @@ def time_transfer(t_str=''):
 if not os.path.exists('tech'):
     os.makedirs('tech')
 
-file0 = 'p4_tech_2022_09'
+file0 = 'p4_tech_2023_02'
 file = r'../data/live/ubisense_rawdata/technician/' + file0 + '.csv'
 data = pandas.read_csv(file)
 data2 = np.zeros((data.shape[0], 8))  # series, staff, date, x, y, from, to, duration
@@ -67,3 +67,12 @@ for i in range(data.shape[0]):
     if data2[i, 7] < 0:  # date change
         data2[i, 7] = 0
 np.savetxt(r'tech/converted/' + file0 + '.csv', data2, fmt='%f', delimiter=',', encoding='utf-8')
+
+'''
+note:
+data in 2022_10 D110210 is missing. Copied from C110210.
+data in 2022_11 D99428
+data in 2023_02 D33280
+data in 2023_02 D302980
+data in 2023_02 D319699
+'''

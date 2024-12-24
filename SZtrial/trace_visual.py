@@ -12,7 +12,7 @@ loading file
 cols: series, staff, date, x, y, from, to, duration
 """
 
-file0 = '2022_09'
+file0 = '2022_10'
 file = r'tech/converted/' + file0 + '.csv'
 data = np.loadtxt(file, dtype='float', delimiter=',', encoding='utf-8')
 
@@ -67,7 +67,7 @@ def draw(_id):
     # plt.show()
 
     # save image
-    plt.savefig('tech/pic/202209/{}.png'.format(_id))
+    plt.savefig('tech/pic/{}/{}.png'.format(file0, _id))
     plt.close()
 
 
@@ -146,8 +146,8 @@ def sec_to_hr(_t):
 '''
 drawing images
 '''
-# for i in range(int(data[-1, 0])):
-#     draw(i)
+for i in range(int(data[-1, 0])):
+    draw(i)
 
 # Below is a single example
 # draw(2)
@@ -156,7 +156,7 @@ drawing images
 calculating std error
 '''
 
-std_error()
+# std_error()
 
 '''
 histogram of durations
