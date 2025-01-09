@@ -2,8 +2,8 @@
 This file is to learn and imitate the original process of patient data processing.
 (1) From raw data to data input
 Source: HERCULES/data_import/importUbisense.ipynb
-
-Note: the grouped data produced here is not stored. The corresponding file is in input_to_grouped.py.py.
+(2) From data input to grouped data and statistical analyses
+Source: HERCULES/data_processing/journey_stats.ipynb
 """
 
 
@@ -20,17 +20,22 @@ pd.set_option('display.max_rows', 300)  # specifies number of rows to show
 # pd.set_option('display.max_columns', 10)  # specifies number of rows to show
 pd.options.display.float_format = '{:40,.4f}'.format # specifies default number format to 4 decimal places
 
+fig_size = (16,10) # how big the exported figures should be - width, height - in inches!
+ymax_boxplot = 240 # max scale on the box plots to normalise across phases
+
 '''
 Edit fields below before processing data
 '''
 
-phase = 'P4_staff_2023_02' # edit which Phase you are analysing - this is used in graph and file generation
+print('Have you checked the raw data path?')
+
+phase = 'P4_staff_2022_09' # edit which Phase you are analysing - this is used in graph and file generation
 # this script assumes CSV above has MM/DD/YYYY format - if not changes needed in next section below
 
-start_date = '2023-02-01' # edit these for reducing processed download between 2 dates
-end_date = '2023-03-01'
+start_date = '2022-09-01' # edit these for reducing processed download between 2 dates
+end_date = '2022-10-01'
 
-df = pd.read_csv('tech/rawdata/p4_tech_2023_02.csv')
+df = pd.read_csv('tech/rawdata/p4_tech_2022_09.csv')
 
 '''
 Data cleaning and formatting
@@ -96,12 +101,59 @@ dfgrouped.columns = flat_cols
 
 dfgrouped['work_length'] = dfgrouped['endtime'] - dfgrouped['starttime']
 
+dfgrouped = dfgrouped.dropna()
+numberofdays = (dfgrouped['starttime'] - pd.to_datetime(start_date)).dt.days
+dfgrouped['daynumber'] = numberofdays + 1 # adding one since counts from zero
+dfgrouped['weeknumber'] = (numberofdays // 7) + 1 # adding one since counts from zero
+
+# Time of Day
+def ftod(x):
+    if (x>12):
+        tod = 'afternoon'
+    else:
+        tod = 'morning'
+    return tod
+
+dfgrouped['tod'] = dfgrouped.starttime.dt.hour.map(ftod)
+
+# Work Length in Minutes
+def get_seconds(time_delta):
+    return time_delta.seconds
+
+dfgrouped['work_length_minutes'] = dfgrouped['work_length'].apply(get_seconds)/60
+
+'''
+Grouped data cleaning
+If there is any data being cleaned, please double check the input data.
+'''
+print('\n--Grouped data cleaning (need to check the input data)--\n')
+# print(dfgrouped.loc[(dfgrouped[['work_length_minutes']] != 0).all(axis=1)])
+print('The minimal work length is {} mins.'.format(dfgrouped['work_length_minutes'].min()))
+
+'''
+The following part is for describing and visualising the data
+'''
+print('\n---Information about the input data---\n')
+print(df.columns)
+print("Earliest Date: ", df.starttime.min())
+print("Latest Date:   ", df.endtime.max())
+
+print('\n---Information about the grouped data---\n')
+print(dfgrouped.columns)
+print(dfgrouped.head())
+print(dfgrouped['work_length'].describe())
+
+print('\n---Time of Day Analysis---\n')
+print(dfgrouped.groupby('tod')['work_length'].mean(numeric_only=False))
 
 '''
 Export back to clean csv
 '''
 df.drop('date', axis=1, inplace=True)
 df.to_csv('tech/Input/{}_input.csv'.format(phase), index=False)
+
+# Change the order of columns to be consistent with the patient data.
+dfgrouped = dfgrouped[['Staff', 'starttime', 'endtime', 'work_length', 'date', 'tod', 'work_length_minutes']]
 dfgrouped.to_csv('tech/Grouped/{}_grouped_data.csv'.format(phase), index=False)
 
 # print(dfgrouped)
