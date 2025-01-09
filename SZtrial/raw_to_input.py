@@ -2,6 +2,8 @@
 This file is to learn and imitate the original process of patient data processing.
 (1) From raw data to data input
 Source: HERCULES/data_import/importUbisense.ipynb
+
+Note: the grouped data produced here is not stored. The corresponding file is in input_to_grouped.py.py.
 """
 
 
@@ -10,9 +12,6 @@ Initialisation
 '''
 
 import pandas as pd
-import numpy as np
-import os
-import matplotlib.pyplot as plt
 
 order_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 order_list_noweekend = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
@@ -25,13 +24,13 @@ pd.options.display.float_format = '{:40,.4f}'.format # specifies default number 
 Edit fields below before processing data
 '''
 
-phase = 'P4_staff_september' # edit which Phase you are analysing - this is used in graph and file generation
+phase = 'P4_staff_2023_02' # edit which Phase you are analysing - this is used in graph and file generation
 # this script assumes CSV above has MM/DD/YYYY format - if not changes needed in next section below
 
-start_date = '2022-09-01' # edit these for reducing processed download between 2 dates
-end_date = '2022-10-01'
+start_date = '2023-02-01' # edit these for reducing processed download between 2 dates
+end_date = '2023-03-01'
 
-df = pd.read_csv('tech/rawdata/p4_tech_2022_09.csv')
+df = pd.read_csv('tech/rawdata/p4_tech_2023_02.csv')
 
 '''
 Data cleaning and formatting
