@@ -1,6 +1,4 @@
 .DS_Store
 arduino_secrets.h
 SZtrial/tech/pic
-SZtrial/tech/Input
-SZtrial/tech/Grouped
 .idea
