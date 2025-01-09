@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="020f082c-11aa-4574-beb4-c6ee0b9eb00b" name="更改" comment="improvement on trace visualisation">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SZtrial/input_to_grouped.py" beforeDir="false" afterPath="$PROJECT_DIR$/SZtrial/input_to_grouped.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SZtrial/raw_to_input.py" beforeDir="false" afterPath="$PROJECT_DIR$/SZtrial/raw_to_input.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data_processing/journey_stats.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/data_processing/journey_stats.ipynb" afterDir="false" />
-    </list>
+    <list default="true" id="020f082c-11aa-4574-beb4-c6ee0b9eb00b" name="更改" comment="improvement on trace visualisation" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
