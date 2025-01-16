@@ -29,13 +29,13 @@ Edit fields below before processing data
 
 print('Have you checked the raw data path?')
 
-phase = 'P4_staff_2022_09' # edit which Phase you are analysing - this is used in graph and file generation
+phase = 'P4_staff_2023_02' # edit which Phase you are analysing - this is used in graph and file generation
 # this script assumes CSV above has MM/DD/YYYY format - if not changes needed in next section below
 
-start_date = '2022-09-01' # edit these for reducing processed download between 2 dates
-end_date = '2022-10-01'
+start_date = '2023-02-01' # edit these for reducing processed download between 2 dates
+end_date = '2023-03-01'
 
-df = pd.read_csv('tech/rawdata/p4_tech_2022_09.csv')
+df = pd.read_csv('tech/rawdata/p4_tech_2023_02.csv')
 
 '''
 Data cleaning and formatting
@@ -137,9 +137,9 @@ dfgrouped['work_length_minutes'] = dfgrouped['work_length'].apply(get_seconds)/6
 Grouped data cleaning
 If there is any data being cleaned, please double check the input data.
 '''
-print('\n--Grouped data cleaning (need to check the input data)--\n')
+# print('\n--Grouped data cleaning (need to check the input data)--\n')
 # print(dfgrouped.loc[(dfgrouped[['work_length_minutes']] != 0).all(axis=1)])
-print('The minimal work length is {} mins.'.format(dfgrouped['work_length_minutes'].min()))
+# print('The minimal work length is {} mins.'.format(dfgrouped['work_length_minutes'].min()))
 
 '''
 The following part is for describing and visualising the data
@@ -162,11 +162,19 @@ Export back to clean csv
 '''
 df.drop('date', axis=1, inplace=True)
 
+# change time format before storing to be consistent with the database
+# df['start_time'] = df['start_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+# df['end_time'] = df['end_time'].dt.strftime('%Y-%m-%d %H:%M:%S')
+
 # add two duplicate columns to be consistent with the database
 df['start_time_ts'] = df['start_time']
 df['end_time_ts'] = df['end_time']
 
-df.to_csv('tech/Input/{}_input.csv'.format(phase), index=False)
+'''
+Please use vscode or notepad instead of excel to check the date time format.
+Excel will automatically change the date format.
+'''
+df.to_csv('tech/Input/{}_input.csv'.format(phase), index=False, date_format='%Y-%m-%d %H:%M:%S', encoding='utf-8')
 
 # Change the order of columns to be consistent with the patient data.
 dfgrouped = dfgrouped[['patient_id', 'start_time', 'end_time', 'work_length', 'date', 'tod', 'work_length_minutes']]
