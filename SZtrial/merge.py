@@ -22,5 +22,8 @@ for i in range(len(files)):
     # The original type of the following locations is object. They should be converted to float64.
     df['x_location'] = pd.to_numeric(df['x_location'])
     df['y_location'] = pd.to_numeric(df['y_location'])
-    
-    df.to_csv(merge_dir, mode='a', index=False, date_format='%Y-%m-%d %H:%M:%S', encoding='utf-8')
+    # tables except for the first one do not need headers!
+    _h = False
+    if i == 0:
+        _h = True
+    df.to_csv(merge_dir, mode='a', index=False, date_format='%Y-%m-%d %H:%M:%S', encoding='utf-8', header=_h)
