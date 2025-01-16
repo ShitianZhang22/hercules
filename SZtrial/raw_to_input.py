@@ -29,13 +29,23 @@ Edit fields below before processing data
 
 print('Have you checked the raw data path?')
 
-phase = 'P4_staff_2022_09' # edit which Phase you are analysing - this is used in graph and file generation
+# store information about different tables
+current = '2023_02'
+config = {
+    '2022_09': ['2022_09', '2022-09-01', '2022-10-01', '2022_09'],
+    '2022_10': ['2022_10', '2022-10-01', '2022-11-01', '2022_10'],
+    '2022_11': ['2022_11', '2022-11-01', '2022-12-01', '2022_11'],
+    '2022_12': ['2022_12', '2022-12-01', '2023-01-01', '2022_12'],
+    '2023_02': ['2023_02', '2023-02-01', '2023-03-01', '2023_02'],
+}
+
+phase = 'P4_staff_' + config[current][0] # edit which Phase you are analysing - this is used in graph and file generation
 # this script assumes CSV above has MM/DD/YYYY format - if not changes needed in next section below
 
-start_date = '2022-09-01' # edit these for reducing processed download between 2 dates
-end_date = '2022-10-01'
+start_date = config[current][1] # edit these for reducing processed download between 2 dates
+end_date = config[current][2]
 
-df = pd.read_csv('tech/rawdata/p4_tech_2022_09.csv')
+df = pd.read_csv('tech/rawdata/p4_tech_{}.csv'.format(config[current][3]))
 
 '''
 Data cleaning and formatting
@@ -178,11 +188,12 @@ df['y_location'] = pd.to_numeric(df['y_location'])
 Please use vscode or notepad instead of excel to check the date time format.
 Excel will automatically change the date format.
 '''
-df.to_csv('tech/Input/{}_input.csv'.format(phase), index=False, date_format='%Y-%m-%d %H:%M:%S', encoding='utf-8')
+# df.to_csv('tech/Input/{}_input.csv'.format(phase), index=False, date_format='%Y-%m-%d %H:%M:%S', encoding='utf-8')
 
 # Change the order of columns to be consistent with the patient data.
 dfgrouped = dfgrouped[['patient_id', 'start_time', 'end_time', 'work_length', 'date', 'tod', 'work_length_minutes']]
 
 # dfgrouped.to_csv('tech/Grouped/{}_grouped_data.csv'.format(phase), index=False)
 
-# print(dfgrouped)
+dfgrouped = df.groupby(['patient_id'], as_index=False)
+print(dfgrouped.agg({'start_time': ['min'], 'end_time': ['max'], 'x_location': ['first'], 'y_location': ['first']}).iloc[:, 0])
