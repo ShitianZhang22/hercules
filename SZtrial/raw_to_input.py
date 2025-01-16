@@ -29,13 +29,13 @@ Edit fields below before processing data
 
 print('Have you checked the raw data path?')
 
-phase = 'P4_staff_2023_02' # edit which Phase you are analysing - this is used in graph and file generation
+phase = 'P4_staff_2022_09' # edit which Phase you are analysing - this is used in graph and file generation
 # this script assumes CSV above has MM/DD/YYYY format - if not changes needed in next section below
 
-start_date = '2023-02-01' # edit these for reducing processed download between 2 dates
-end_date = '2023-03-01'
+start_date = '2022-09-01' # edit these for reducing processed download between 2 dates
+end_date = '2022-10-01'
 
-df = pd.read_csv('tech/rawdata/p4_tech_2023_02.csv')
+df = pd.read_csv('tech/rawdata/p4_tech_2022_09.csv')
 
 '''
 Data cleaning and formatting
@@ -169,6 +169,10 @@ df.drop('date', axis=1, inplace=True)
 # add two duplicate columns to be consistent with the database
 df['start_time_ts'] = df['start_time']
 df['end_time_ts'] = df['end_time']
+
+# The original type of the following locations is object. They should be converted to float64.
+df['x_location'] = pd.to_numeric(df['x_location'])
+df['y_location'] = pd.to_numeric(df['y_location'])
 
 '''
 Please use vscode or notepad instead of excel to check the date time format.
